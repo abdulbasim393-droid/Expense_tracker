@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-from extensions import db
 from models.user import User
 from extensions import db, bcrypt
 
@@ -35,3 +34,38 @@ def register():
     return jsonify({
         "message": "User registered successfully"
     }), 201
+
+
+
+
+@auth.route("/login", methods=["POST"])
+def login():
+
+    data = request.get_json()
+
+    email = data.get("email")
+    password = data.get("password")
+
+    user = User.query.filter_by(
+        email=email
+    ).first()
+
+    if not user:
+        return jsonify({
+            "message": "User not found"
+        }), 404
+    
+    print(user.password)
+
+    if bcrypt.check_password_hash(
+        user.password,
+        password
+    ):
+
+        return jsonify({
+            "message": "Login successful"
+        }), 200
+
+    return jsonify({
+        "message": "Invalid password"
+    }), 401
