@@ -23,3 +23,5 @@ class User(db.Model):
         db.String(255),
         nullable=False
     )
+
+
