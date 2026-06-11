@@ -1,12 +1,13 @@
 from flask import Flask
 from config import Config
-from extensions import db
 from routes.auth import auth
+from extensions import db, bcrypt
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
 db.init_app(app)
+bcrypt.init_app(app)
 
 from models.user import User
 
