@@ -1,31 +1,28 @@
 from flask import Blueprint, request, jsonify
 from extensions import db
 from models.expense import Expense
+from flask_jwt_extended import (
+    jwt_required,
+    get_jwt_identity
+)
 
 expense = Blueprint("expense", __name__)
 
 
 # CREATE EXPENSE
 @expense.route("/expenses", methods=["POST"])
+@jwt_required()
 def add_expense():
+
+    current_user_id = get_jwt_identity()
 
     data = request.get_json()
 
-    title = data.get("title")
-    amount = data.get("amount")
-    category = data.get("category")
-    user_id = data.get("user_id")
-
-    if not title or amount is None or not category or not user_id:
-        return jsonify({
-            "message": "All fields are required"
-        }), 400
-
     new_expense = Expense(
-        title=title,
-        amount=amount,
-        category=category,
-        user_id=user_id
+        title=data["title"],
+        amount=data["amount"],
+        category=data["category"],
+        user_id=current_user_id
     )
 
     db.session.add(new_expense)
@@ -36,11 +33,16 @@ def add_expense():
     }), 201
 
 
+
 # GET ALL EXPENSES
 @expense.route("/expenses", methods=["GET"])
+@jwt_required()
 def get_expenses():
 
-    expenses = Expense.query.all()
+    current_user_id = get_jwt_identity()
+    expenses = Expense.query.filter_by(
+        user_id=current_user_id
+        ).all()
 
     result = []
 
@@ -50,6 +52,7 @@ def get_expenses():
             "title": expense_item.title,
             "amount": expense_item.amount,
             "category": expense_item.category,
+            "created_at": expense_item.created_at.isoformat(),
             "user_id": expense_item.user_id
         })
 
@@ -58,9 +61,14 @@ def get_expenses():
 
 # GET SINGLE EXPENSE
 @expense.route("/expenses/<int:id>", methods=["GET"])
+@jwt_required()
 def get_expense(id):
 
-    expense_item = db.session.get(Expense, id)
+    current_user_id = get_jwt_identity()
+    expense_item = Expense.query.filter_by(
+        id=id,
+        user_id=current_user_id
+        ).first()
 
     if not expense_item:
         return jsonify({
@@ -78,9 +86,16 @@ def get_expense(id):
 
 # UPDATE EXPENSE
 @expense.route("/expenses/<int:id>", methods=["PUT"])
+@jwt_required()
 def update_expense(id):
 
-    expense_item = db.session.get(Expense, id)
+
+
+    current_user_id = get_jwt_identity()
+    expense_item = Expense.query.filter_by(
+        id=id,
+        user_id=current_user_id
+    ).first()
 
     if not expense_item:
         return jsonify({
@@ -113,9 +128,15 @@ def update_expense(id):
 
 # DELETE EXPENSE
 @expense.route("/expenses/<int:id>", methods=["DELETE"])
+@jwt_required()
 def delete_expense(id):
 
-    expense_item = db.session.get(Expense, id)
+    current_user_id = get_jwt_identity()
+
+    expense_item = Expense.query.filter_by(
+        id=id,
+        user_id=current_user_id
+    ).first()
 
     if not expense_item:
         return jsonify({

@@ -1,0 +1,93 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+/* LOGIN / ADD */
+.center {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CARD */
+.card {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  margin: 10px;
+  width: 250px;
+}
+
+.card input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background: #111827;
+  color: white;
+}
+
+.card button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  background: #3b82f6;
+  cursor: pointer;
+}
+
+.link-button {
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: none;
+  color: #94a3b8;
+}
+
+/* LAYOUT */
+.layout {
+  display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 200px;
+  height: 100vh;
+  background: #111827;
+  padding: 20px;
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  margin: 10px 0;
+  text-decoration: none;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* GRID */
+.grid {
+  display: flex;
+  gap: 10px;
+}
+
+/* EXPENSE ROW */
+.expense {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: #1e293b;
+  margin: 5px 0;
+  border-radius: 5px;
+}

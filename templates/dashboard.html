@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>ExpenseX</h2>
+
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('add') }}">Add Expense</a>
+        <a href="#">Analytics</a>
+
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="page-header">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Track your spending and review your recent activity.</p>
+            </div>
+            <button class="primary" onclick="openModal()">+ Add Expense</button>
+        </div>
+
+        <!-- SUMMARY CARDS -->
+        <div class="cards" id="summary"></div>
+
+        <!-- EXPENSE TABLE -->
+        <div class="table">
+            <div class="table-header">
+                <span>Title</span>
+                <span>Category</span>
+                <span>Amount</span>
+                <span>Date</span>
+            </div>
+
+            <div id="expenses"></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h3>Add Expense</h3>
+
+        <input id="title" placeholder="Title">
+        <input id="amount" placeholder="Amount">
+        <input id="category" placeholder="Category">
+
+        <button onclick="addExpense()">Save</button>
+        <button class="secondary" onclick="closeModal()">Cancel</button>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+
+<script>
+const token = localStorage.getItem("token");
+if (!token) {
+    window.location.href = "/login";
+} else {
+    loadDashboard();
+}
+</script>
+
+</body>
+</html>
