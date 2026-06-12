@@ -14,7 +14,7 @@
 
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('add') }}">Add Expense</a>
-        <a href="#">Analytics</a>
+        <a href="{{ url_for('analytics_page') }}">Analytics</a>
 
         <button onclick="logout()">Logout</button>
     </div>
@@ -64,18 +64,7 @@
 
 <script src="{{ url_for('static', filename='app.js') }}"></script>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const token = localStorage.getItem("token");
 
-    if (!token || token === "null" || token === "undefined") {
-        window.location.replace("/login");
-        return;
-    }
-
-    loadDashboard();
-});
-</script>
 
 </body>
 </html>

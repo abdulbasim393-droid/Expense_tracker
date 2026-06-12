@@ -39,6 +39,10 @@ def register_page():
 def dashboard():
     return render_template("dashboard.html")
 
+@app.route("/analytics")
+def analytics_page():
+    return render_template("analytics.html")
+
 @app.route("/add")
 def add():
     return render_template("add_expense.html")

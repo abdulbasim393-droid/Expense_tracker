@@ -8,7 +8,7 @@ def get_total_expenses(user_id, db):
         func.sum(Expense.amount)
     ).filter_by(user_id=user_id).scalar()
 
-    return total or 0
+    return float(total or 0)
 
 
 def get_category_breakdown(user_id, db):
@@ -19,7 +19,7 @@ def get_category_breakdown(user_id, db):
      .group_by(Expense.category).all()
 
     return [
-        {"category": category, "total": total}
+        {"category": category, "total": float(total)}
         for category, total in result
     ]
 
@@ -85,3 +85,19 @@ def get_average_daily(user_id, db):
     total_spent = sum([r[1] for r in result])
 
     return total_spent / total_days
+
+
+def get_total_transactions(user_id, db):
+    return db.session.query(Expense)\
+        .filter_by(user_id=user_id)\
+        .count()
+
+
+def get_highest_expense(user_id, db):
+    highest = db.session.query(
+        func.max(Expense.amount)
+    ).filter_by(user_id=user_id).scalar()
+
+    return highest or 0
+
+

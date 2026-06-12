@@ -57,12 +57,12 @@ async function loadDashboard() {
         const data = await res.json();
 
         document.getElementById("summary").innerHTML = `
-            <div class="card">Total ₹${data.total_expenses}</div>
+            <div class="card">Total : ₹${data.total_expenses}</div>
             <div class="card">
-                Top ${data.top_category?.category || "-"}
+                Top : ${data.top_category?.category || "-"}
             </div>
             <div class="card">
-                Avg ₹${(data.average_daily || 0).toFixed(2)}
+                Avg : ₹${(data.average_daily || 0).toFixed(2)}
             </div>
         `;
 
@@ -73,6 +73,51 @@ async function loadDashboard() {
         window.location.replace("/login");
     }
 }
+
+
+
+
+async function loadAnalytics() {
+    console.log("Loading analytics...");
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        window.location.replace("/login");
+        return;
+    }
+
+    try {
+        const res = await fetch("/analytics/summary", {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        if (!res.ok) {
+            console.error(await res.text());
+            return;
+        }
+
+        const data = await res.json();
+        console.log("Analytics data:", data);
+
+        document.getElementById("totalExpense").textContent =
+            "₹" + data.total_expenses;
+
+        document.getElementById("averageDaily").textContent =
+            "₹" + Number(data.average_daily).toFixed(2);
+
+        document.getElementById("topCategory").textContent =
+            data.top_category
+                ? data.top_category.category
+                : "-";
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+
 
 
 /* =========================
@@ -186,3 +231,21 @@ function openModal() {
 function closeModal() {
     document.getElementById("modal").style.display = "none";
 }
+
+
+/* =========================
+   PAGE INITIALIZER
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Dashboard page
+    if (document.getElementById("summary")) {
+        loadDashboard();
+    }
+
+    // Analytics page
+    if (document.getElementById("totalExpense")) {
+        loadAnalytics();
+    }
+
+});
