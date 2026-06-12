@@ -76,6 +76,10 @@ async function loadDashboard() {
 
 
 
+/* =========================
+   ANALYTICS LOAD
+========================= */
+
 
 async function loadAnalytics() {
     console.log("Loading analytics...");
@@ -112,12 +116,242 @@ async function loadAnalytics() {
                 ? data.top_category.category
                 : "-";
 
+        loadCategoryChart();
+        loadMonthlyChart();
+        loadDailyChart();
+
     } catch (err) {
         console.error(err);
     }
 }
 
 
+
+/* =========================
+   LOAD CATEGORY CHART
+========================= */
+
+async function loadCategoryChart() {
+
+    const token = localStorage.getItem("token");
+
+    try {
+        const res = await fetch("/analytics/category", {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        if (!res.ok) {
+            console.error(await res.text());
+            return;
+        }
+
+        const data = await res.json();
+
+        const labels = data.map(item => item.category);
+        const amounts = data.map(item => item.total);
+
+        const ctx = document.getElementById("categoryChart").getContext("2d");
+
+        new Chart(ctx, {
+            type: "pie",
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: amounts,
+                    backgroundColor: [
+                        "#3B82F6",
+                        "#10B981",
+                        "#F59E0B",
+                        "#EF4444",
+                        "#8B5CF6",
+                        "#06B6D4",
+                        "#EC4899",
+                        "#84CC16"
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: {
+                            color: "white"
+                        }
+                    }
+                }
+            }
+        });
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+
+/* =========================
+   LOAD MONTHLY CHART
+========================= */
+
+async function loadMonthlyChart() {
+
+    const token = localStorage.getItem("token");
+
+    try {
+
+        const res = await fetch("/analytics/monthly", {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        if (!res.ok) {
+            console.error(await res.text());
+            return;
+        }
+
+        const data = await res.json();
+
+        const labels = data.map(item => {
+            const date = new Date(item.month);
+            return date.toLocaleString("default", {
+                month: "short",
+                year: "numeric"
+            });
+        });
+
+        const totals = data.map(item => item.total);
+
+        const ctx = document
+            .getElementById("monthlyChart")
+            .getContext("2d");
+
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Monthly Expenses",
+                    data: totals
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: "white"
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: "white"
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: "white"
+                        }
+                    }
+                }
+            }
+        });
+
+    } catch (err) {
+        console.error(err);
+    }
+
+}
+
+
+/* =========================
+   LOAD DAILY CHART
+========================= */
+
+
+async function loadDailyChart() {
+
+    const token = localStorage.getItem("token");
+
+    try {
+
+        const res = await fetch("/analytics/last-30-days", {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        if (!res.ok) {
+            console.error(await res.text());
+            return;
+        }
+
+        const data = await res.json();
+
+        const labels = data.map(item => {
+            const date = new Date(item.date);
+            return date.toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short"
+            });
+        });
+
+        const totals = data.map(item => item.total);
+
+        const ctx = document
+            .getElementById("dailyChart")
+            .getContext("2d");
+
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Daily Expenses",
+                    data: totals,
+                    fill: false,
+                    borderColor: "#3B82F6",
+                    backgroundColor: "#3B82F6",
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: "white"
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: "white"
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: "white"
+                        }
+                    }
+                }
+            }
+        });
+
+    } catch (err) {
+        console.error(err);
+    }
+
+}
 
 
 /* =========================

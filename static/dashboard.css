@@ -214,3 +214,71 @@ body {
     background:#2563eb;
     color:white;
 }
+
+
+
+
+
+/* =========================
+   MODAL IMPROVEMENTS
+========================= */
+
+.modal-content {
+    background: #111827;
+    padding: 25px;
+    border-radius: 15px;
+    width: 380px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.4);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.modal-content input,
+.modal-content select {
+
+    width: 100%;
+    margin: 8px 0;
+    padding: 12px;
+    background: #1f2937;
+    border: 1px solid #374151;
+    color: white;
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box;
+
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+
+    outline: none;
+    border-color: #3b82f6;
+
+}
+
+.modal-buttons {
+
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+
+}
+
+.modal-buttons button {
+
+    flex: 1;
+
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar nav a.active {
+    background: #2563eb;
+    color: white;
+}

@@ -1,40 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseX - Dashboard</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
 </head>
 <body>
 
 <div class="layout">
 
-    <!-- SIDEBAR -->
+    <!-- ================= Sidebar ================= -->
     <div class="sidebar">
+
         <h2>ExpenseX</h2>
 
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('add') }}">Add Expense</a>
-        <a href="{{ url_for('analytics_page') }}">Analytics</a>
+        <nav>
+            <a class="active" href="{{ url_for('dashboard') }}">
+                🏠 Dashboard
+            </a>
 
-        <button onclick="logout()">Logout</button>
+            <a href="{{ url_for('analytics_page') }}">
+                📊 Analytics
+            </a>
+        </nav>
+
+        <button onclick="logout()">
+            Logout
+        </button>
+
     </div>
 
-    <!-- MAIN -->
+    <!-- ================= Main ================= -->
     <div class="main">
 
         <div class="page-header">
+
             <div>
                 <h1>Dashboard</h1>
-                <p>Track your spending and review your recent activity.</p>
+                <p>
+                    Track your spending and review your recent activity.
+                </p>
             </div>
-            <button class="primary" onclick="openModal()">+ Add Expense</button>
+
+            <button class="primary" onclick="openModal()">
+                ➕ Add Expense
+            </button>
+
         </div>
 
-        <!-- SUMMARY CARDS -->
-        <div class="cards" id="summary"></div>
+        <!-- Summary -->
+        <div class="cards" id="summary">
+            <!-- Filled by app.js -->
+        </div>
 
-        <!-- EXPENSE TABLE -->
+        <!-- Expense Table -->
         <div class="table">
+
             <div class="table-header">
                 <span>Title</span>
                 <span>Category</span>
@@ -42,29 +65,68 @@
                 <span>Date</span>
             </div>
 
-            <div id="expenses"></div>
+            <div id="expenses">
+                <!-- Filled by app.js -->
+            </div>
+
         </div>
 
     </div>
+
 </div>
 
-<!-- MODAL -->
+<!-- ================= Add Expense Modal ================= -->
+
 <div class="modal" id="modal">
+
     <div class="modal-content">
-        <h3>Add Expense</h3>
 
-        <input id="title" placeholder="Title">
-        <input id="amount" placeholder="Amount">
-        <input id="category" placeholder="Category">
+        <h2>Add Expense</h2>
 
-        <button onclick="addExpense()">Save</button>
-        <button class="secondary" onclick="closeModal()">Cancel</button>
+        <input
+            type="text"
+            id="title"
+            placeholder="Expense Title">
+
+        <input
+            type="number"
+            id="amount"
+            placeholder="Expense Amount">
+
+        <select id="category">
+
+            <option value="">Select Category</option>
+
+            <option value="Food">🍔 Food</option>
+            <option value="Fuel">⛽ Fuel</option>
+            <option value="Shopping">🛍 Shopping</option>
+            <option value="Bills">💡 Bills</option>
+            <option value="Travel">✈ Travel</option>
+            <option value="Entertainment">🎮 Entertainment</option>
+            <option value="Health">🏥 Health</option>
+            <option value="Education">📚 Education</option>
+            <option value="Salary">💰 Salary</option>
+            <option value="Other">📦 Other</option>
+
+        </select>
+
+        <div class="modal-buttons">
+
+            <button class="primary" onclick="addExpense()">
+                Save Expense
+            </button>
+
+            <button class="secondary" onclick="closeModal()">
+                Cancel
+            </button>
+
+        </div>
+
     </div>
+
 </div>
 
 <script src="{{ url_for('static', filename='app.js') }}"></script>
-
-
 
 </body>
 </html>
