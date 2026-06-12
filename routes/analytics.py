@@ -17,7 +17,7 @@ analytics = Blueprint("analytics", __name__, url_prefix="/analytics")
 @analytics.route("/summary", methods=["GET"])
 @jwt_required()
 def summary():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
 
     return jsonify({
         "total_expenses": get_total_expenses(user_id, db),
@@ -29,19 +29,19 @@ def summary():
 @analytics.route("/category", methods=["GET"])
 @jwt_required()
 def category():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     return jsonify(get_category_breakdown(user_id, db))
 
 
 @analytics.route("/monthly", methods=["GET"])
 @jwt_required()
 def monthly():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     return jsonify(get_monthly_trend(user_id, db))
 
 
 @analytics.route("/last-30-days", methods=["GET"])
 @jwt_required()
 def last_30():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     return jsonify(get_last_30_days(user_id, db))

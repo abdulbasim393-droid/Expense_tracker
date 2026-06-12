@@ -17,7 +17,9 @@ async function login() {
 
   if (data.access_token) {
     localStorage.setItem("token", data.access_token);
+    setTimeout(() => {
     window.location.href = "/dashboard";
+}, 100);
   } else {
     alert(data.message || "Login failed");
   }
@@ -27,52 +29,51 @@ async function login() {
    DASHBOARD LOAD
 ========================= */
 async function loadDashboard() {
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  if (!token) {
-    window.location.href = "/login";
-    return;
-  }
-
-  try {
-    const res = await fetch(`/analytics/summary`, {
-      headers: { "Authorization": "Bearer " + token }
-    });
-
-    if (!res.ok) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-      return;
+    if (!token || token === "null" || token === "undefined") {
+        window.location.replace("/login");
+        return;
     }
 
-    const data = await res.json();
+    try {
+        const res = await fetch(`${API}/analytics/summary`, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            }
+        });
 
-    const summary = document.getElementById("summary");
-  if (summary) {
-    summary.innerHTML = `
-      <div class="card">
-        <h3>Total Spent</h3>
-        <p>₹${data.total_expenses || 0}</p>
-      </div>
-      <div class="card">
-        <h3>Top Category</h3>
-        <p>${data.top_category?.category || "-"}</p>
-        <small>₹${data.top_category?.total || 0}</small>
-      </div>
-      <div class="card">
-        <h3>Daily Average</h3>
-        <p>₹${(data.average_daily || 0).toFixed(2)}</p>
-      </div>
-    `;
-  }
+        if (!res.ok) {
+            if (res.status === 401 || res.status === 422) {
+                localStorage.removeItem("token");
+            }
+            console.error("Dashboard auth fail", res.status, await res.text());
+            window.location.replace("/login");
+            return;
+        }
 
-  loadExpenses();
-  } catch (error) {
-    console.error(error);
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-  }
+        const data = await res.json();
+
+        document.getElementById("summary").innerHTML = `
+            <div class="card">Total ₹${data.total_expenses}</div>
+            <div class="card">
+                Top ${data.top_category?.category || "-"}
+            </div>
+            <div class="card">
+                Avg ₹${(data.average_daily || 0).toFixed(2)}
+            </div>
+        `;
+
+        loadExpenses();
+    } catch (error) {
+        console.error("Dashboard load error", error);
+        localStorage.removeItem("token");
+        window.location.replace("/login");
+    }
 }
+
 
 /* =========================
    EXPENSE LIST
@@ -80,22 +81,42 @@ async function loadDashboard() {
 async function loadExpenses() {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${API}/expenses`, {
-    headers: { "Authorization": "Bearer " + token }
-  });
+  if (!token || token === "null" || token === "undefined") {
+    window.location.replace("/login");
+    return;
+  }
 
-  const data = await res.json();
-  const expensesContainer = document.getElementById("expenses");
-  if (!expensesContainer) return;
+  try {
+    const res = await fetch(`${API}/expenses`, {
+      headers: { "Authorization": "Bearer " + token }
+    });
 
-  expensesContainer.innerHTML = data.map(e => `
-    <div class="expense">
-      <span>${e.title || "-"}</span>
-      <span>${e.category}</span>
-      <span>₹${e.amount}</span>
-      <span>${formatDate(e.created_at)}</span>
-    </div>
-  `).join("");
+    if (!res.ok) {
+      if (res.status === 401 || res.status === 422) {
+        localStorage.removeItem("token");
+      }
+      console.error("Expenses auth fail", res.status, await res.text());
+      window.location.replace("/login");
+      return;
+    }
+
+    const data = await res.json();
+    const expensesContainer = document.getElementById("expenses");
+    if (!expensesContainer) return;
+
+    expensesContainer.innerHTML = data.map(e => `
+      <div class="expense">
+        <span>${e.title || "-"}</span>
+        <span>${e.category}</span>
+        <span>₹${e.amount}</span>
+        <span>${formatDate(e.created_at)}</span>
+      </div>
+    `).join("");
+  } catch (error) {
+    console.error("Expenses load error", error);
+    localStorage.removeItem("token");
+    window.location.replace("/login");
+  }
 }
 
 function formatDate(value) {

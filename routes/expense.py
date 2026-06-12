@@ -14,7 +14,7 @@ expense = Blueprint("expense", __name__)
 @jwt_required()
 def add_expense():
 
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())
 
     data = request.get_json()
 
@@ -39,7 +39,7 @@ def add_expense():
 @jwt_required()
 def get_expenses():
 
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())
     expenses = Expense.query.filter_by(
         user_id=current_user_id
         ).all()
@@ -64,7 +64,7 @@ def get_expenses():
 @jwt_required()
 def get_expense(id):
 
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())
     expense_item = Expense.query.filter_by(
         id=id,
         user_id=current_user_id
@@ -91,7 +91,7 @@ def update_expense(id):
 
 
 
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())
     expense_item = Expense.query.filter_by(
         id=id,
         user_id=current_user_id
@@ -131,7 +131,7 @@ def update_expense(id):
 @jwt_required()
 def delete_expense(id):
 
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())
 
     expense_item = Expense.query.filter_by(
         id=id,
