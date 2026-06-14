@@ -384,13 +384,32 @@ async function loadExpenses() {
     if (!expensesContainer) return;
 
     expensesContainer.innerHTML = data.map(e => `
-      <div class="expense">
+    <div class="expense">
+
         <span>${e.title || "-"}</span>
+
         <span>${e.category}</span>
+
         <span>₹${e.amount}</span>
+
         <span>${formatDate(e.created_at)}</span>
-      </div>
-    `).join("");
+
+        <div class="actions">
+
+            <button
+                class="edit-btn"
+                onclick="editExpense(${e.id})">
+                Edit
+            </button>
+
+            <button
+                class="delete-btn"
+                onclick="deleteExpense(${e.id})">
+                Delete
+            </button>
+        </div>
+    </div>
+`).join("");
   } catch (error) {
     console.error("Expenses load error", error);
     localStorage.removeItem("token");
@@ -464,6 +483,45 @@ function openModal() {
 
 function closeModal() {
     document.getElementById("modal").style.display = "none";
+}
+
+
+
+
+// DELETE FUNCTION
+
+
+async function deleteExpense(id) {
+
+    const confirmDelete = confirm(
+        "Are you sure you want to delete this expense?"
+    );
+
+    if (!confirmDelete) return;
+
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`/expenses/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+
+        alert(data.message);
+
+        loadDashboard();
+
+    } else {
+
+        alert(data.message);
+
+    }
+
 }
 
 

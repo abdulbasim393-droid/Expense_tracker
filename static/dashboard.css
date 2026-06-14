@@ -108,7 +108,7 @@ body {
 
 .table-header {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr 140px;
     font-weight: bold;
     padding: 10px;
     border-bottom: 1px solid #1f2937;
@@ -116,7 +116,7 @@ body {
 
 .expense {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr 140px;
     padding: 10px;
     border-bottom: 1px solid #1f2937;
     align-items: center;
@@ -281,4 +281,39 @@ body {
 .sidebar nav a.active {
     background: #2563eb;
     color: white;
+}
+
+
+/* EDIT/DELETE */
+
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-btn,
+.delete-btn {
+    border: none;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    transition: 0.2s;
+}
+
+.edit-btn {
+    background: #2563eb;
+}
+
+.edit-btn:hover {
+    background: #1d4ed8;
+}
+
+.delete-btn {
+    background: #dc2626;
+}
+
+.delete-btn:hover {
+    background: #b91c1c;
 }
