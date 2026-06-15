@@ -82,7 +82,7 @@
 
     <div class="modal-content">
 
-        <h2>Add Expense</h2>
+        <h2 id="modalTitle">Add Expense</h2>
 
         <input
             type="text"
@@ -113,8 +113,11 @@
 
         <div class="modal-buttons">
 
-            <button class="primary" onclick="addExpense()">
-                Save Expense
+            <button
+            id="saveButton"
+            class="primary"
+            onclick="addExpense()">
+            Save Expense
             </button>
 
             <button class="secondary" onclick="closeModal()">

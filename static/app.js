@@ -1,5 +1,7 @@
 const API = "";
 
+let editingExpenseId = null;
+
 /* =========================
    LOGIN
 ========================= */
@@ -436,23 +438,31 @@ async function addExpense() {
     return;
   }
 
-  const res = await fetch(`${API}/expenses`, {
-    method: "POST",
+  const url = editingExpenseId
+    ? `/expenses/${editingExpenseId}`
+    : `${API}/expenses`;
+
+  const method = editingExpenseId
+    ? "PUT"
+    : "POST";
+
+  const res = await fetch(url, {
+    method: method,
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
     },
     body: JSON.stringify({
-      title,
-      amount,
-      category
+        title,
+        amount,
+        category
     })
-  });
+});
 
   const data = await res.json();
 
   if (res.ok) {
-    alert("Expense added successfully.");
+    alert(data.message);
     const titleField = document.getElementById("title");
     const amountField = document.getElementById("amount");
     const categoryField = document.getElementById("category");
@@ -460,6 +470,11 @@ async function addExpense() {
     if (titleField) titleField.value = "";
     if (amountField) amountField.value = "";
     if (categoryField) categoryField.value = "";
+
+
+    editingExpenseId = null;
+    document.getElementById("modalTitle").innerText = "Add Expense";
+    document.getElementById("saveButton").innerText = "Save Expense";
 
     if (document.getElementById("modal")) {
       closeModal();
@@ -478,11 +493,32 @@ function logout() {
 }
 
 function openModal() {
+
+    // Reset edit mode
+    editingExpenseId = null;
+
+    // Reset modal title and button
+    document.getElementById("modalTitle").innerText = "Add Expense";
+    document.getElementById("saveButton").innerText = "Save Expense";
+
+    // Clear the form
+    document.getElementById("title").value = "";
+    document.getElementById("amount").value = "";
+    document.getElementById("category").value = "";
+
+    // Show the modal
     document.getElementById("modal").style.display = "flex";
+
+    showModal();
 }
 
 function closeModal() {
     document.getElementById("modal").style.display = "none";
+}
+
+
+function showModal() {
+    document.getElementById("modal").style.display = "flex";
 }
 
 
@@ -522,6 +558,41 @@ async function deleteExpense(id) {
 
     }
 
+}
+
+
+//EDIT FUNCTION
+
+async function editExpense(id) {
+    console.log("editingExpenseId in addExpense:", editingExpenseId);
+
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`/expenses/${id}`, {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    const expense = await res.json();
+
+    if (!res.ok) {
+        alert(expense.message || "Failed to load expense.");
+        return;
+    }
+
+    document.getElementById("title").value = expense.title;
+    document.getElementById("amount").value = expense.amount;
+    document.getElementById("category").value = expense.category;
+
+    editingExpenseId = id;
+
+    console.log("Editing expense:", editingExpenseId);
+
+    document.getElementById("modalTitle").innerText = "Edit Expense";
+    document.getElementById("saveButton").innerText = "Update Expense";
+
+    showModal();
 }
 
 
